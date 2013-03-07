@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Configuration;
 using Microsoft.AspNet.SignalR.Hosting;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.Json;
 using Microsoft.AspNet.SignalR.Messaging;
@@ -31,6 +32,7 @@ namespace Microsoft.AspNet.SignalR
         private ITransportManager _transportManager;
         private bool _initialized;
         private IServerCommandHandler _serverMessageHandler;
+        private IHubPipelineInvoker _pipelineInvoker;
 
         public virtual void Initialize(IDependencyResolver resolver, HostContext context)
         {
@@ -59,6 +61,7 @@ namespace Microsoft.AspNet.SignalR
             _configurationManager = resolver.Resolve<IConfigurationManager>();
             _transportManager = resolver.Resolve<ITransportManager>();
             _serverMessageHandler = resolver.Resolve<IServerCommandHandler>();
+            _pipelineInvoker = resolver.Resolve<IHubPipelineInvoker>();
 
             _initialized = true;
         }
@@ -80,7 +83,7 @@ namespace Microsoft.AspNet.SignalR
 
         protected IMessageBus MessageBus { get; private set; }
 
-        protected JsonSerializer JsonSerializer { get; private set; }
+        protected static JsonSerializer JsonSerializer { get; private set; }
 
         protected IAckHandler AckHandler { get; private set; }
 
@@ -452,13 +455,18 @@ namespace Microsoft.AspNet.SignalR
             response["WebSocketServerUrl"] = context.WebSocketServerUrl();
             response["ProtocolVersion"] = "1.2";
 
+            return _pipelineInvoker.Negotiate(context, response);
+        }
+
+        internal static Task Negotiate(HostContext context, Dictionary<string, object> response)
+        {
             if (!String.IsNullOrEmpty(context.Request.QueryString["callback"]))
             {
-                return ProcessJsonpRequest(context, payload);
+                return ProcessJsonpRequest(context, response);
             }
 
             context.Response.ContentType = JsonUtility.JsonMimeType;
-            return context.Response.End(JsonSerializer.Stringify(payload));
+            return context.Response.End(JsonSerializer.Stringify(response));
         }
 
         private static string GetUserIdentity(HostContext context)
@@ -470,7 +478,7 @@ namespace Microsoft.AspNet.SignalR
             return String.Empty;
         }
 
-        private Task ProcessJsonpRequest(HostContext context, object payload)
+        private static Task ProcessJsonpRequest(HostContext context, object payload)
         {
             context.Response.ContentType = JsonUtility.JavaScriptMimeType;
             var data = JsonUtility.CreateJsonpCallback(context.Request.QueryString["callback"], JsonSerializer.Stringify(payload));
