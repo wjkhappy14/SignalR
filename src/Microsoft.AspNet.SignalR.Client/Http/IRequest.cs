@@ -14,10 +14,13 @@ namespace Microsoft.AspNet.SignalR.Client.Http
     /// </summary>
     public interface IRequest
     {
+
+#if !PORTABLE
         /// <summary>
         /// The user agent for this request.
         /// </summary>
         string UserAgent { get; set; }
+#endif
 
         /// <summary>
         /// The credentials for this request.
@@ -29,7 +32,7 @@ namespace Microsoft.AspNet.SignalR.Client.Http
         /// </summary>
         CookieContainer CookieContainer { get; set; }
 
-#if !SILVERLIGHT
+#if !PORTABLE
         /// <summary>
         /// The proxy information for this request.
         /// </summary>
@@ -52,7 +55,7 @@ namespace Microsoft.AspNet.SignalR.Client.Http
         /// <param name="headers">request headers</param>
         void SetRequestHeaders(IDictionary<string, string> headers);
 
-#if (NET4 || NET45)
+#if !PORTABLE
         /// <summary>
         /// Sets client certificates
         /// </summary>

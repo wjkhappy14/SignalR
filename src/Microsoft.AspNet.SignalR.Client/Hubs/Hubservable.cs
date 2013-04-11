@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.AspNet.SignalR.Client.Hubs
 {
+#if !PORTABLE
     /// <summary>
     /// <see cref="T:System.IObservable{object[]}"/> implementation of a hub event.
     /// </summary>
@@ -33,4 +34,5 @@ namespace Microsoft.AspNet.SignalR.Client.Hubs
             });
         }
     }
+#endif
 }

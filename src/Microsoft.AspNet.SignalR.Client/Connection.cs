@@ -69,7 +69,7 @@ namespace Microsoft.AspNet.SignalR.Client
         //The json serializer for the connections
         private JsonSerializer _jsonSerializer = new JsonSerializer();
 
-#if (NET4 || NET45)
+#if !PORTABLE
         private readonly X509CertificateCollection certCollection = new X509CertificateCollection();
 #endif
 
@@ -229,7 +229,7 @@ namespace Microsoft.AspNet.SignalR.Client
         /// </summary>
         public IDictionary<string, string> Headers { get; private set; }
 
-#if !SILVERLIGHT
+#if !PORTABLE
         /// <summary>
         /// Gets of sets proxy information for the connection.
         /// </summary>
@@ -566,7 +566,7 @@ namespace Microsoft.AspNet.SignalR.Client
             return Send(this.JsonSerializeObject(value));
         }
 
-#if (NET4 || NET45)
+#if !PORTABLE
         /// <summary>
         /// Adds a client certificate to the request
         /// </summary>
@@ -684,7 +684,9 @@ namespace Microsoft.AspNet.SignalR.Client
 #if SILVERLIGHT
             // Useragent is not possible to set with Silverlight, not on the UserAgent property of the request nor in the Headers key/value in the request
 #else
+#if !PORTABLE
             request.UserAgent = CreateUserAgentString("SignalR.Client");
+#endif
 #endif
 #endif
             if (Credentials != null)
@@ -697,7 +699,7 @@ namespace Microsoft.AspNet.SignalR.Client
                 request.CookieContainer = CookieContainer;
             }
 
-#if !SILVERLIGHT
+#if !PORTABLE
             if (Proxy != null)
             {
                 request.Proxy = Proxy;
@@ -705,7 +707,7 @@ namespace Microsoft.AspNet.SignalR.Client
 #endif
             request.SetRequestHeaders(Headers);
 
-#if (NET4 || NET45)
+#if !PORTABLE
             request.AddClientCerts(certCollection);
 #endif
         }
@@ -722,7 +724,7 @@ namespace Microsoft.AspNet.SignalR.Client
 #endif
             }
 
-#if NETFX_CORE
+#if PORTABLE
             return String.Format(CultureInfo.InvariantCulture, "{0}/{1} ({2})", client, _assemblyVersion, "Unknown OS");
 #else
             return String.Format(CultureInfo.InvariantCulture, "{0}/{1} ({2})", client, _assemblyVersion, Environment.OSVersion);
@@ -779,7 +781,7 @@ namespace Microsoft.AspNet.SignalR.Client
                 Debug.WriteLine(value);
             }
 
-#if NETFX_CORE
+#if PORTABLE
             public override void Write(char value)
             {
                 // This is wrong we don't call it
