@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
-#if (NET4 || NET45)
+#if !PORTABLE
 using System.Security.Cryptography.X509Certificates;
 #endif
 

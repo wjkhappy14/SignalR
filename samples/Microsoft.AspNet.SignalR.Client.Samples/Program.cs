@@ -48,7 +48,6 @@ namespace Microsoft.AspNet.SignalR.Client.Samples
 
             hubConnection.Start().Wait();
 
-
             demo.Invoke("multipleCalls").ContinueWith(task =>
             {
                 using (var error = task.Exception.GetError())
@@ -125,6 +124,7 @@ namespace Microsoft.AspNet.SignalR.Client.Samples
             }
 
             var wh = new ManualResetEvent(false);
+            Console.WriteLine("====================="+connection.Transport+"====================");
             startTask.ContinueWith(task =>
             {
                 try
