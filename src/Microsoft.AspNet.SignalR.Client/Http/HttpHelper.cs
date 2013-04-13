@@ -115,6 +115,7 @@ namespace Microsoft.AspNet.SignalR.Client.Http
         {
             HttpWebRequest request = null;
             request = (HttpWebRequest)WebRequest.Create(url);
+            request.AllowReadStreamBuffering = false;
             return request;
         }
     }

@@ -684,7 +684,7 @@ namespace Microsoft.AspNet.SignalR.Client
 #if SILVERLIGHT
             // Useragent is not possible to set with Silverlight, not on the UserAgent property of the request nor in the Headers key/value in the request
 #else
-#if !PORTABLE
+#if PORTABLE
             request.UserAgent = CreateUserAgentString("SignalR.Client");
 #endif
 #endif
@@ -717,11 +717,8 @@ namespace Microsoft.AspNet.SignalR.Client
         {
             if (_assemblyVersion == null)
             {
-#if NETFX_CORE
-                _assemblyVersion = new Version("1.1.0");
-#else
+
                 _assemblyVersion = new AssemblyName(typeof(Connection).Assembly.FullName).Version;
-#endif
             }
 
 #if PORTABLE

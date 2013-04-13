@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
+using Windows.System.Threading;
 
 namespace Microsoft.AspNet.SignalR.Client
 {
@@ -12,6 +13,8 @@ namespace Microsoft.AspNet.SignalR.Client
     {
         // Timer to determine when to notify the user and reconnect if required
         private Timer _timer;
+
+        private ThreadPoolTimer _timer;
 
         // Used to ensure that the Beat only executes when the connection is in the Connected state
         private readonly object _connectionStateLock;
