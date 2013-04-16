@@ -2,48 +2,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNet.SignalR.Client.Http
 {
-    /// <summary>
-    /// The default <see cref="IHttpClient"/> implementation.
-    /// </summary>
     public class DefaultHttpClient : IHttpClient
     {
-        /// <summary>
-        /// Makes an asynchronous http GET request to the specified url.
-        /// </summary>
-        /// <param name="url">The url to send the request to.</param>
-        /// <param name="prepareRequest">A callback that initializes the request with default values.</param>
-        /// <returns>A <see cref="T:Task{IResponse}"/>.</returns>
         public Task<IResponse> Get(string url, Action<IRequest> prepareRequest)
         {
-            IRequest req = null;
-            return HttpHelper.GetAsync(url, request =>
-            {
-                req = new HttpWebRequestWrapper(request);
-                prepareRequest(req);
-            }
-            ).Then(response => (IResponse)new HttpWebResponseWrapper(response));
+            var cts = new CancellationTokenSource();
+            var handler = new DefaultHttpHandler(prepareRequest, cts.Cancel);
+            var client = new HttpClient(handler);
+            return client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token)
+                .Then(responseMessage =>  (IResponse)new HttpResponseMessageWrapper(responseMessage));
         }
 
-        /// <summary>
-        /// Makes an asynchronous http POST request to the specified url.
-        /// </summary>
-        /// <param name="url">The url to send the request to.</param>
-        /// <param name="prepareRequest">A callback that initializes the request with default values.</param>
-        /// <param name="postData">form url encoded data.</param>
-        /// <returns>A <see cref="T:Task{IResponse}"/>.</returns>
         public Task<IResponse> Post(string url, Action<IRequest> prepareRequest, IDictionary<string, string> postData)
         {
-            IRequest req = null;
-            return HttpHelper.PostAsync(url, request =>
+            var cts = new CancellationTokenSource();
+            var handler = new DefaultHttpHandler(prepareRequest, cts.Cancel);
+            var client = new HttpClient(handler);
+            var req = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (postData == null)
             {
-                req = new HttpWebRequestWrapper(request);
-                prepareRequest(req);
-            },
-            postData).Then(response => (IResponse)new HttpWebResponseWrapper(response));
+                req.Content = new StringContent(String.Empty);
+            }
+            else
+            {
+                req.Content = new FormUrlEncodedContent(postData);
+            }
+
+            return client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cts.Token).
+                Then(responseMessage => (IResponse)new HttpResponseMessageWrapper(responseMessage));
         }
     }
 }

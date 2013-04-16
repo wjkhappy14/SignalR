@@ -68,6 +68,8 @@ namespace Microsoft.AspNet.SignalR.Client.Samples
         {
             var connection = new Connection("http://localhost:40476/raw-connection");
 
+            connection.Headers.Add("test", "test");
+
             connection.Received += data =>
             {
                 Console.WriteLine(data);

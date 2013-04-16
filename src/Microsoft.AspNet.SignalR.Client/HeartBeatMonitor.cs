@@ -5,16 +5,19 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-using Windows.System.Threading;
+// using Windows.System.Threading;
 
 namespace Microsoft.AspNet.SignalR.Client
 {
     public class HeartbeatMonitor : IDisposable
     {
         // Timer to determine when to notify the user and reconnect if required
-        private Timer _timer;
 
-        private ThreadPoolTimer _timer;
+#if !PORTABLE
+        private Timer _timer;
+#endif
+
+        // private ThreadPoolTimer _timer;
 
         // Used to ensure that the Beat only executes when the connection is in the Connected state
         private readonly object _connectionStateLock;
@@ -47,7 +50,9 @@ namespace Microsoft.AspNet.SignalR.Client
             _connection.UpdateLastKeepAlive();
             HasBeenWarned = false;
             TimedOut = false;
+#if !PORTABLE
             _timer = new Timer(_ => Beat(), state: null, dueTime: _connection.KeepAliveData.CheckInterval, period: _connection.KeepAliveData.CheckInterval);
+#endif
         }
 
         /// <summary>
@@ -115,12 +120,13 @@ namespace Microsoft.AspNet.SignalR.Client
         {
             if (disposing)
             {
+#if !PORTABLE
                 if (_timer != null)
                 {
                     _timer.Dispose();
                     _timer = null;
                 }
-
+#endif
             }
         }
     }

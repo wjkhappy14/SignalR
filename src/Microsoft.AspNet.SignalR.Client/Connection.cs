@@ -69,7 +69,7 @@ namespace Microsoft.AspNet.SignalR.Client
         //The json serializer for the connections
         private JsonSerializer _jsonSerializer = new JsonSerializer();
 
-#if !PORTABLE
+#if !PORTABLE && !SILVERLIGHT
         private readonly X509CertificateCollection certCollection = new X509CertificateCollection();
 #endif
 
@@ -684,7 +684,7 @@ namespace Microsoft.AspNet.SignalR.Client
 #if SILVERLIGHT
             // Useragent is not possible to set with Silverlight, not on the UserAgent property of the request nor in the Headers key/value in the request
 #else
-#if PORTABLE
+#if !PORTABLE
             request.UserAgent = CreateUserAgentString("SignalR.Client");
 #endif
 #endif
@@ -717,8 +717,11 @@ namespace Microsoft.AspNet.SignalR.Client
         {
             if (_assemblyVersion == null)
             {
-
+#if !PORTABLE
                 _assemblyVersion = new AssemblyName(typeof(Connection).Assembly.FullName).Version;
+#else
+                _assemblyVersion = new System.Version("1.1.0");
+#endif
             }
 
 #if PORTABLE

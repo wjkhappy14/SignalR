@@ -55,7 +55,7 @@ namespace Microsoft.AspNet.SignalR.Client.Http
         /// <param name="headers">request headers</param>
         void SetRequestHeaders(IDictionary<string, string> headers);
 
-#if !PORTABLE
+#if !PORTABLE && !SILVERLIGHT
         /// <summary>
         /// Sets client certificates
         /// </summary>

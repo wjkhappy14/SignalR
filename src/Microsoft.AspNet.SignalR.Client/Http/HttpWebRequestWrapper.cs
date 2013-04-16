@@ -132,7 +132,7 @@ namespace Microsoft.AspNet.SignalR.Client.Http
             }
         }
 
-#if (!PORTABLE)
+#if !PORTABLE && !SILVERLIGHT
         public void AddClientCerts(X509CertificateCollection certificates)
         {
             if (certificates == null)
