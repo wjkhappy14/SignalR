@@ -59,8 +59,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Microsoft.AspNet.SignalR.Hosting.AspNet.Samples\Raw\RawConnection.cs">
-      <Link>RawConnection.cs</Link>
+    <Compile Include="..\Microsoft.AspNet.SignalR.Samples\Raw\RawConnection.cs">
+      <Link>Connections\RawConnection.cs</Link>
     </Compile>
     <Compile Include="Hubs\Chat.cs" />
     <Compile Include="Startup.cs" />

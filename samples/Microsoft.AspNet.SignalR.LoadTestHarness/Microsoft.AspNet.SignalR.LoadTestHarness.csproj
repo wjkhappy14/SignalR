@@ -175,7 +175,7 @@
     <Compile Include="..\..\src\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs">
       <Link>TaskAsyncHelper.cs</Link>
     </Compile>
-    <Compile Include="..\Microsoft.AspNet.SignalR.Hosting.AspNet.Samples\Hubs\RealtimeBroadcast\HighFrequencyTimer.cs">
+    <Compile Include="..\Microsoft.AspNet.SignalR.Samples\Hubs\RealtimeBroadcast\HighFrequencyTimer.cs">
       <Link>HighFrequencyTimer.cs</Link>
     </Compile>
     <Compile Include="Baseline\Basic.ashx.cs">
