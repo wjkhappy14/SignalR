@@ -8,13 +8,6 @@ namespace Microsoft.AspNet.SignalR.Samples
 {
     public class Global : System.Web.HttpApplication
     {
-        protected void Application_Start(object sender, EventArgs e)
-        {
-            SignalRConfig.ConfigureSignalR(GlobalHost.DependencyResolver, GlobalHost.HubPipeline);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BackgroundThread.Start();
-        }
-
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
             var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];

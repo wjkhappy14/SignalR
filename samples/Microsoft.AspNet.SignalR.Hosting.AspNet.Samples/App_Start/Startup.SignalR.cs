@@ -4,7 +4,7 @@ using Microsoft.AspNet.SignalR.Redis;
 
 namespace Microsoft.AspNet.SignalR.Samples
 {
-    public static class SignalRConfig
+    public partial class Startup
     {
         public static void ConfigureSignalR(IDependencyResolver dependencyResolver, IHubPipeline hubPipeline)
         {

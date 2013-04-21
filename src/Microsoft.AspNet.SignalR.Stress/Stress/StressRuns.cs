@@ -11,7 +11,7 @@ using Microsoft.AspNet.SignalR.Configuration;
 using Microsoft.AspNet.SignalR.Hosting.Memory;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
-using Microsoft.AspNet.SignalR.Samples.Raw;
+using Microsoft.AspNet.SignalR.Samples;
 using Microsoft.AspNet.SignalR.Tests.Infrastructure;
 using Newtonsoft.Json.Linq;
 using Owin;

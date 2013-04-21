@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Samples.Raw;
+using Microsoft.AspNet.SignalR.Samples;
 using Owin;
 
 namespace Microsoft.AspNet.Owin.Samples

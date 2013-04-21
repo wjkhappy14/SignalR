@@ -1,29 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Web.Routing;
-using Microsoft.AspNet.SignalR.Samples.Raw;
-using Microsoft.AspNet.SignalR.Samples.Streaming;
+using System.Threading.Tasks;
 using Owin;
 
 namespace Microsoft.AspNet.SignalR.Samples
 {
-    using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
+    using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public static class RouteConfig
+    public partial class Startup
     {
-        public static void RegisterRoutes(RouteCollection routes)
+        public void Configuration(IAppBuilder app)
         {
-            routes.MapConnection<SendingConnection>("sending-connection", "sending-connection");
-            routes.MapConnection<TestConnection>("test-connection", "test-connection");
-            routes.MapConnection<RawConnection>("raw-connection", "raw-connection");
-            routes.MapConnection<StreamingConnection>("streaming-connection", "streaming-connection");
+            app.MapConnection<SendingConnection>("sending-connection");
+            app.MapConnection<TestConnection>("test-connection");
+            app.MapConnection<RawConnection>("raw-connection");
+            app.MapConnection<StreamingConnection>("streaming-connection");
 
-            // Register the default hubs route /signalr
-            routes.MapHubs("/signalr", new HubConfiguration() { EnableDetailedErrors = true }, AuthMiddleware);
+            SetupAuthenticationMiddleware(app);
+
+            ConfigureSignalR(GlobalHost.DependencyResolver, GlobalHost.HubPipeline);
+
+            var config = new HubConfiguration()
+            {
+                EnableDetailedErrors = true
+            };
+
+            app.MapHubs(config);
+
+            BackgroundThread.Start();
         }
 
-        private static void AuthMiddleware(IAppBuilder app)
+        private static void SetupAuthenticationMiddleware(IAppBuilder app)
         {
             Func<AppFunc, AppFunc> middleware = (next) =>
             {

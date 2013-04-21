@@ -5,8 +5,8 @@ using System.IO;
 using Microsoft.AspNet.SignalR.Client.Transports;
 using Microsoft.AspNet.SignalR.Configuration;
 using Microsoft.AspNet.SignalR.Hosting.Memory;
+using Microsoft.AspNet.SignalR.Tests.Common;
 using Microsoft.AspNet.SignalR.Tracing;
-using Owin;
 
 namespace Microsoft.AspNet.SignalR.FunctionalTests.Infrastructure
 {
@@ -93,24 +93,8 @@ namespace Microsoft.AspNet.SignalR.FunctionalTests.Infrastructure
                     configuration.KeepAlive = TimeSpan.FromSeconds(keepAlive.Value);
                 }
 
-                app.MapHubs("/signalr2/test", new HubConfiguration());
-                app.MapHubs("/signalr", new HubConfiguration { EnableDetailedErrors = true, Resolver = dr });
+                Initializer.ConfigureRoutes(app, dr);
 
-                var config = new ConnectionConfiguration
-                {
-                    Resolver = dr
-                };
-
-                app.MapConnection<MyBadConnection>("/ErrorsAreFun", config);
-                app.MapConnection<MyGroupEchoConnection>("/group-echo", config);
-                app.MapConnection<MySendingConnection>("/multisend", config);
-                app.MapConnection<MyReconnect>("/my-reconnect", config);
-                app.MapConnection<MyGroupConnection>("/groups", config);
-                app.MapConnection<MyRejoinGroupsConnection>("/rejoin-groups", config);
-                app.MapConnection<FilteredConnection>("/filter", config);
-                app.MapConnection<SyncErrorConnection>("/sync-error", config);
-                app.MapConnection<AddGroupOnConnectedConnection>("/add-group", config);
-                app.MapConnection<UnusableProtectedConnection>("/protected", config);
             });
         }
 
